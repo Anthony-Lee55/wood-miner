@@ -38,16 +38,24 @@ let autoBoosts = [
 
 function farm() {
   // console.log('farm away');
-  update()
+  clickUpdate()
+  // autoUpdate()
 }
 
-function update() {
+function clickUpdate() {
   const woodCount = document.getElementById('woodCount')
   woodCount.innerText = wood.toString()
-  wood += 1
+  wood += calculateClickTotal()
   // const woodCountParagraphElem = woodCountElem.querySelector('p')
   // const woodCount = 
   // farm()
+  // calculateClickTotal()
+}
+
+function autoUpdate() {
+  const woodCount = document.getElementById('woodCount')
+  woodCount.innerText = wood.toString()
+  wood += calculateAutoTotal()
 }
 
 function axeUpgrade() {
@@ -58,13 +66,22 @@ function axeUpgrade() {
     window.alert("You don't have enough wood, keep chopping!")
   }
   else {
+    const axeUpgrade = clickBoosts[0]
     wood -= 10
+    axeUpgrade.quantity++
+    // TODO: Prices change visually not mathematically
+    // const axePriceElem = document.getElementById('axePrice')
+    // const axePriceParagraphElem = axePriceElem.querySelector('p')
+    // // const axePrice = clickBoosts[0]
+    // axePriceParagraphElem.innerText = `${axeUpgrade.price = Math.floor(Math.random() * 100)}`
+    // axeUpgrade.price = Math.floor(axeUpgrade.price * Math.random())
     // console.log('axe upgrade')
   }
-  const axeUpgrade = clickBoosts[0]
-  axeUpgrade.quantity++
+  drawWood()
   // console.log('axe', axeUpgrade);
   drawAxeAmount()
+  // drawClickBoosts()
+  drawClickTotal()
 }
 
 function chainsawUpgrade() {
@@ -74,11 +91,26 @@ function chainsawUpgrade() {
   }
   else {
     // console.log('chainsaw upgrade')
+    const chainsawUpgrade = clickBoosts[1]
+    wood -= 100
+    chainsawUpgrade.quantity++
   }
-  const chainsawUpgrade = clickBoosts[1]
-  chainsawUpgrade.quantity++
+  drawWood()
   // console.log('axe', axeUpgrade);
   drawChainsawAmount()
+  // drawClickBoosts()
+  drawClickTotal()
+}
+
+function calculateClickTotal() {
+  let clickTotal = 1
+  for (let i = 0; i < clickBoosts.length; i++) {
+    const clickBoost = clickBoosts[i];
+    clickTotal += clickBoost.bonus * clickBoost.quantity
+  }
+  // console.log('clickTotal');
+
+  return clickTotal
 }
 
 function lumberjackUpgrade() {
@@ -88,11 +120,14 @@ function lumberjackUpgrade() {
   }
   else {
     // console.log('lumberjack upgrade')
+    const lumberjackUpgrade = autoBoosts[0]
+    wood -= 1000
+    lumberjackUpgrade.quantity++
   }
-  const lumberjackUpgrade = autoBoosts[0]
-  lumberjackUpgrade.quantity++
+  drawWood()
   // console.log('axe', axeUpgrade);
   drawLumberjackAmount()
+  drawAutoTotal()
 }
 
 function woodChipperUpgrade() {
@@ -102,11 +137,25 @@ function woodChipperUpgrade() {
   }
   else {
     // console.log('wood chipper upgrade')
+    const woodChipperUpgrade = autoBoosts[1]
+    wood -= 10000
+    woodChipperUpgrade.quantity++
   }
-  const woodChipperUpgrade = autoBoosts[1]
-  woodChipperUpgrade.quantity++
+  drawWood()
   // console.log('axe', axeUpgrade);
   drawWoodChipperAmount()
+  drawAutoTotal()
+}
+
+function calculateAutoTotal() {
+  let autoTotal = 0
+  for (let i = 0; i < autoBoosts.length; i++) {
+    const autoBoost = autoBoosts[i];
+    autoTotal += autoBoost.bonus * autoBoost.quantity
+  }
+  // console.log('autoTotal');
+
+  return autoTotal
 }
 
 //#endregion
@@ -131,7 +180,10 @@ function drawChainsawAmount() {
   chainsawParagraphElem.innerText = `Chainsaw: ${chainsaw.quantity}`
 }
 
-function drawClickBoosts() {
+function drawClickTotal() {
+  let clickTotal = calculateClickTotal()
+  const clickTotalElem = document.getElementById('clickCounter')
+  clickTotalElem.innerText = clickTotal.toString()
 }
 
 function drawLumberjackAmount() {
@@ -152,12 +204,20 @@ function drawWoodChipperAmount() {
   woodChipperParagraphElem.innerText = `Wood Chippers: ${woodChipper.quantity}`
 }
 
-function drawAutoBoosts() {
-
+function drawAutoTotal() {
+  let autoTotal = calculateAutoTotal()
+  const autoTotalElem = document.getElementById('autoCounter')
+  autoTotalElem.innerText = autoTotal.toString()
 }
 
 function drawWood() {
   const woodElem = document.getElementById('woodCount')
+  woodElem.innerText = wood.toString()
 }
+
+drawWood()
+// drawClickBoosts()
+setInterval(autoUpdate, 3000)
+
 
 //#endregion
